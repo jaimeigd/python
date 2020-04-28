@@ -1,0 +1,156 @@
+#Programa en Python, proyecto TIC-TAC-TOE de finalizacion del modulo 4 del curso
+#PCAP: Programming Essentials In Python 
+
+#####FUNCIONES
+
+def DisplayBoard(board):
+#
+# la función acepta un parámetro el cual contiene el estado actual del tablero
+# y lo muestra en la consola
+#
+    i=0
+    j=0
+    print("+-------+-------+-------+")
+
+    for row in board:
+        print("|       |       |       |")
+        print("|",end="")
+        for column in row:
+            print("  ",board[i][j],"  |",end="")
+            j+=1
+        print("")
+        print("|       |       |       |")
+        print("+-------+-------+-------+")
+        i+=1
+        j=0
+
+def EnterMove(board):
+#
+# la función acepta el estado actual del tablero y pregunta al usuario acerca de su movimiento, 
+# verifica la entrada y actualiza el tablero acorde a la decisión del usuario
+#
+    while True:
+        valor=int(input("ingrese movimiento: "))
+        if valor>0 and valor<10:
+            if dic[valor]!="X" and dic[valor]!="O":
+                break
+            print("posicion ocupada")
+    dic[valor]="O"
+    dictolist(dic)
+#    DisplayBoard(board)
+
+def MakeListOfFreeFields(board):
+#
+# la función examina el tablero y construye una lista de todos los cuadros vacíos 
+# la lista esta compuesta por tuplas, cada tupla es un par de números que indican la fila y columna
+#
+    global lista
+    i=0
+    j=0
+    n=1
+    lista=[]
+    tupla=()
+    for i in range(3):
+        for j in range(3):
+            if dic[n]=="X" or dic[n]=="O":
+                tupla=i,j,
+                lista.append(tupla)
+            n+=1
+
+def VictoryFor(board):
+#
+# la función analiza el estatus del tablero para verificar si
+# el jugador que utiliza las 'O's o las 'X's ha ganado el juego
+#
+# Posibles convinaciones para ganar: 123,456,789,147,258,369,159,357
+
+    global winner
+
+    if dic[1]=="X" and dic[2]=="X" and dic[3]=="X" or \
+       dic[4]=="X" and dic[5]=="X" and dic[6]=="X" or \
+       dic[7]=="X" and dic[8]=="X" and dic[9]=="X" or \
+       dic[1]=="X" and dic[4]=="X" and dic[7]=="X" or \
+       dic[2]=="X" and dic[5]=="X" and dic[8]=="X" or \
+       dic[3]=="X" and dic[6]=="X" and dic[9]=="X" or \
+       dic[1]=="X" and dic[5]=="X" and dic[9]=="X" or \
+       dic[3]=="X" and dic[5]=="X" and dic[7]=="X":
+        winner="-"
+    elif dic[1]=="O" and dic[2]=="O" and dic[3]=="O" or \
+       dic[4]=="O" and dic[5]=="O" and dic[6]=="O" or \
+       dic[7]=="O" and dic[8]=="O" and dic[9]=="O" or \
+       dic[1]=="O" and dic[4]=="O" and dic[7]=="O" or \
+       dic[2]=="O" and dic[5]=="O" and dic[8]=="O" or \
+       dic[3]=="O" and dic[6]=="O" and dic[9]=="O" or \
+       dic[1]=="O" and dic[5]=="O" and dic[9]=="O" or \
+       dic[3]=="O" and dic[5]=="O" and dic[7]=="O":
+        winner="+"
+    else:
+        winner="0"
+
+def DrawMove(board):
+#
+# la función dibuja el movimiento de la maquina y actualiza el tablero
+#
+    from random import randrange
+    valor=0
+
+
+    while True:
+        valor=randrange(10)
+        if valor>0 and valor<10:
+            if dic[valor]!="X" and dic[valor]!="O":
+                break
+    dic[valor]="X"
+    dictolist(dic)
+
+def dictolist(dic):
+#
+#Funcion para convertir de diccionario a lista
+#
+    n=1
+    row=[]
+    for k in range(3):
+        for h in range(3):
+            row.append(dic[n])
+            n+=1
+        board[k]=row
+        row=[]
+
+####ESTRUCTURA DEL PROGRAMA
+
+#Inicializacion de variables
+winner="0"
+board=[None,None,None]
+dic={1:1,2:2,3:3,4:4,5:"X",6:6,7:7,8:8,9:9}
+rep="y"
+
+#Inicializa el juego
+while rep!="n":
+    dictolist(dic)
+    DisplayBoard(board)
+
+#El juego esta en progreso
+    while winner=="0":
+        EnterMove(board)
+        VictoryFor(board)
+        if winner!="0":
+            DisplayBoard(board)
+            break
+        DrawMove(board)
+        DisplayBoard(board)
+        VictoryFor(board)
+        MakeListOfFreeFields(board)
+        if len(lista)==9:
+            break
+
+#Finaliza el juego y se indica al usuario el resultado final
+    if winner=="+":
+        print("Has ganado la partida!")
+    elif winner=="-":
+        print("Lo sentimos, has perdido :(")
+    else:
+        print("Han quedado empatados!")
+    rep=input("Desea volver a jugar?(Ingrese cualquier tecla para continuar o n para salir) ")
+    winner="0"
+    board=[None,None,None]
+    dic={1:1,2:2,3:3,4:4,5:"X",6:6,7:7,8:8,9:9}
